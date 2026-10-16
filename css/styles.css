@@ -1,0 +1,165 @@
+/* Lalima Photo Studio: brand tokens + the few things Tailwind utilities don't cover */
+:root {
+  --brand: #B3122E;
+  --brand-deep: #7A0C20;
+  --sunset: #F2994A;
+  --gold: #D4A24C;
+  --bg: #FFF8F1;
+  --surface: #FFFFFF;
+  --text: #2A1E1A;
+  --muted: #6B5B54;
+  --whatsapp: #25D366;
+  /* Signature gradient: decorative only (white text on amber fails AA) */
+  --glow: linear-gradient(135deg, var(--brand), var(--sunset));
+  /* Button/band gradient: crimson → burnt orange, white text passes AA on both ends */
+  --btn: linear-gradient(135deg, #B3122E, #C2410C);
+  --shadow: 0 8px 24px rgb(122 12 32 / 0.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand: #E5485F;
+    --brand-deep: #B3122E;
+    --sunset: #F5A962;
+    --gold: #E0B666;
+    --bg: #14100E;
+    --surface: #1E1916;
+    --text: #F5EDE6;
+    --muted: #B9A99F;
+    --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Mukta, system-ui, sans-serif;
+  line-height: 1.6;
+}
+:lang(ne) { font-family: Mukta, Inter, sans-serif; }
+h1, h2, h3, .font-serif { font-family: Fraunces, Georgia, serif; line-height: 1.15; }
+/* Fraunces has no Devanagari: Nepali headings use Mukta, with room for matras */
+:lang(ne) :is(h1, h2, h3, .font-serif), :is(h1, h2, h3, .font-serif):lang(ne) { font-family: Mukta, Inter, sans-serif; font-weight: 700; line-height: 1.35; }
+.lang-toggle a[aria-current] { background: var(--btn); color: #fff; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; border-radius: 6px; }
+
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; background: var(--surface); padding: .75rem 1rem; border-radius: 999px; }
+.skip:focus { top: 1rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 48px; padding: 0 1.5rem; border-radius: 999px;
+  font-weight: 600; text-decoration: none; white-space: nowrap;
+  transition: transform .2s, box-shadow .2s, filter .2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); filter: brightness(1.05); }
+.btn-primary { background: var(--btn); color: #fff; }
+.btn-outline { border: 2px solid var(--brand); color: var(--brand); background: transparent; }
+.btn-wa { background: var(--whatsapp); color: #052E16; }
+
+.card { background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); }
+.link { color: var(--brand); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+.icon-badge {
+  display: inline-grid; place-items: center; flex: none;
+  width: 3.5rem; height: 3.5rem; border-radius: 999px;
+  background: var(--btn); color: #fff;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .35rem .9rem; border-radius: 999px; font-size: .875rem; font-weight: 600;
+  background: color-mix(in srgb, var(--sunset) 22%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
+}
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: 0; }
+
+/* Hero: soft animated "sunrise" glow + film grain */
+.hero { position: relative; overflow: hidden; isolation: isolate; }
+.hero::before {
+  content: ""; position: absolute; inset: -20%; z-index: -2;
+  background:
+    radial-gradient(40% 50% at 80% 20%, color-mix(in srgb, var(--sunset) 45%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 15% 85%, color-mix(in srgb, var(--brand) 28%, transparent), transparent 70%),
+    radial-gradient(30% 40% at 60% 90%, color-mix(in srgb, var(--gold) 30%, transparent), transparent 70%);
+  animation: sunrise 18s ease-in-out infinite alternate;
+}
+.hero::after, .band::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .18; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@keyframes sunrise {
+  from { transform: translate3d(0, 4%, 0) scale(1); }
+  to   { transform: translate3d(-4%, -3%, 0) scale(1.08); }
+}
+
+/* Gradient CTA band */
+.band { position: relative; isolation: isolate; overflow: hidden; background: var(--btn); color: #fff; }
+
+/* Camera viewfinder corners */
+.vf {
+  --c: var(--gold); --l: 28px; --w: 3px;
+  padding: 14px;
+  background:
+    linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w),
+    linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l);
+  background-repeat: no-repeat;
+}
+
+/* Film strip edge divider */
+.filmstrip {
+  height: 22px;
+  background-color: var(--brand-deep);
+  background-image: repeating-linear-gradient(90deg, transparent 0 10px, var(--bg) 10px 22px, transparent 22px 32px);
+  background-size: 100% 8px; background-position: 0 7px; background-repeat: repeat-x;
+}
+
+.initials {
+  display: grid; place-items: center; aspect-ratio: 4 / 5; width: 100%;
+  border-radius: 20px; background: var(--btn); color: #fff;
+  font: 700 4rem Fraunces, Georgia, serif;
+}
+
+/* Gallery placeholder tiles */
+.tile { position: relative; aspect-ratio: 1; border-radius: 20px; overflow: hidden; display: grid; place-items: center; color: #fff; }
+.tile span { position: absolute; left: 1rem; bottom: .75rem; font-weight: 600; text-shadow: 0 1px 4px rgb(0 0 0 / .4); }
+
+/* FAQ accordion (native <details>) */
+details summary { cursor: pointer; list-style: none; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-weight: 600; }
+details summary::-webkit-details-marker { display: none; }
+details summary::after { content: "+"; font-size: 1.5rem; color: var(--brand); transition: transform .2s; }
+details[open] summary::after { transform: rotate(45deg); }
+
+/* Form */
+.field { width: 100%; min-height: 48px; padding: .75rem 1rem; border-radius: 14px; background: var(--bg); color: var(--text); border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent); }
+.field:focus { outline: 3px solid var(--brand); outline-offset: 1px; }
+
+/* Filter buttons */
+.filter[aria-pressed="true"] { background: var(--btn); color: #fff; border-color: transparent; }
+
+/* Mobile sticky contact bar */
+.sticky-bar { padding-bottom: env(safe-area-inset-bottom); background: var(--surface); box-shadow: 0 -6px 20px rgb(0 0 0 / .08); }
+.has-bar { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+@media (min-width: 768px) { .has-bar { padding-bottom: 0; } }
+
+/* Scroll reveal (only hides content when JS is running) */
+.js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .4s ease, transform .4s ease; }
+.js .reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero::before { animation: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .btn { transition: none; }
+  .btn:hover { transform: none; }
+}
